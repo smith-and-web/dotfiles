@@ -1,0 +1,282 @@
+[colors]
+background = "${xrdb:background}"
+foreground = "${xrdb:foreground}"
+primary = "${xrdb:color4}"
+secondary = "${xrdb:color6}"
+alert = "ff0000"
+
+[bar/i3]
+monitor = ${env:MONITOR:}
+width = 50%:-15px
+height = 35
+offset-y = 10px
+offset-x = 10px
+override-redirect = true
+wm-restack = i3
+background = ${colors.background}
+foreground = ${colors.foreground}
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+padding-right = 1
+
+font-0 = "VCR OSD Mono:antialias=true:size=13"
+font-1 = FontAwesome:style=Regular:size=12.5
+
+modules-left = i3
+
+[bar/util]
+monitor = ${env:MONITOR:}
+width = 50%:-15px
+height = 35
+offset-y = 10
+offset-x = 50%:+5px
+override-redirect = true
+wm-restack = i3
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-right = 1
+font-0 = "VCR OSD Mono:antialias=true:size=13"
+font-1 = FontAwesome:style=Regular:size=12.5
+font-2 = Weather Icons:size=12;1
+modules-left = weather date
+modules-center = cpu temperature memory
+modules-right = network battery
+ 
+[bar/spotify]
+monitor = ${env:MONITOR:}
+padding-right = 2
+padding-left = 0
+width = 50%
+override-redirect = true
+height = 35
+offset-y = 10
+offset-x = 25%
+
+font-0 = "VCR OSD Mono:antialias=true:size=13"
+font-1 = "VCR OSD Mono:antialias=true:size=13"
+font-2 = "VCR OSD Mono:antialias=true:size=13"
+font-3 = FontAwesome:size=11
+
+bottom = true
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+enable-ipc = true
+modules-left = previous playpause next spotify
+modules-right = bluetooth volume
+
+[module/spacer]
+type = custom/text
+content = " "
+
+[module/i3]
+type = internal/i3
+strip-wsnumbers = true
+format = <label-state> <label-mode>
+label-mode = %mode%
+
+label-focused = " %icon% %name% "
+label-focused-foreground = ${colors.background}
+label-focused-background = ${colors.primary}
+
+label-unfocused = " %icon% %name% "
+label-visible = " %icon% %name% "
+
+ws-icon-0 = 1: teams;
+ws-icon-1 = 2: mail;
+ws-icon-2 = 3: tunes;
+ws-icon-3 = 4: k8s;
+ws-icon-4 = 5: code;
+ws-icon-5 = 6: term;
+ws-icon-6 = 7: www;
+ws-icon-7 = 8: this;
+ws-icon-8 = 9: that;
+
+[module/cpu]
+type = internal/cpu
+interval = 1
+label = " cpu: %percentage:2%% "
+label-background = ${colors.primary}
+label-foreground = ${colors.background}
+
+[module/network]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+format-connected = "<label-connected> "
+label-connected = "%{A1:networkmanager_dmenu:} %essid% %{A}"
+
+format-disconnected = "<label-disconnected> "
+format-disconnected-foreground = ${colors.primary}
+label-disconnected = "%{A1:networkmanager_dmenu:} Not Connected %{A}"
+unknown-as-up = true
+
+[module/date]
+type = internal/date
+interval = 1
+date = %A, %d %B %Y
+time = %H:%M
+label = " %date% %time%"
+
+[module/weather]
+type = custom/script
+exec = ~/.config/polybar/scripts/weather.sh
+interval = 600
+label-font = 3
+format-background = ${colors.secondary}
+
+[module/temperature]
+type = internal/temperature
+thermal-zone = 0
+warn-temperature = 70
+
+format = <label>
+format-warn = <label-warn>
+
+label = " temp: %temperature-c% "
+label-background = ${colors.primary}
+label-foreground = ${colors.background}
+label-warn = " temp: %temperature-c% "
+label-warn-foreground = ${colors.background}
+label-warn-background = #400
+
+[module/memory]
+type = internal/memory
+interval = 2
+
+format = <label>
+label = " mem: %percentage_used%% "
+label-background = ${colors.primary}
+label-foreground = ${colors.background}
+
+[module/battery]
+type = internal/battery
+
+battery = BAT0
+adapter = AT0
+full-at = 98
+
+poll-interval = 98
+
+
+format-charging = "<animation-charging> <label-charging>"
+format-discharging = "<ramp-capacity> <label-discharging>"
+format-full = " <label-full>"
+
+label-charging = %percentage%%
+label-discharging = %percentage%%
+label-full = %percentage%%
+
+animation-charging-0 = "  "
+animation-charging-1 = "  "
+animation-charging-2 = "  "
+animation-charging-3 = "  "
+animation-charging-4 = "  "
+animation-charging-framerate = 750
+
+ramp-capacity-0 = "  "
+ramp-capacity-1 = "  "
+ramp-capacity-2 = "  "
+ramp-capacity-3 = "  "
+;animation-discharging-1 = "  "
+;animation-discharging-0 = "  "
+
+[module/volume]
+type = internal/pulseaudio
+
+format-prefix = "   "
+format-volume = <ramp-volume> <label-volume>
+format-muted = <ramp-volume> <label-muted>
+format-muted-foreground = ${colors.alert}
+
+label-volume = "%percentage%%"
+label-muted = "%percentage%%"
+
+bar-volume-width = 10
+bar-volume-indicator = |
+bar-volume-fill = ─
+bar-volume-empty = ─
+
+ramp-volume-0 = "  "
+ramp-volume-1 = "  "
+ramp-volume-2 = "  "
+
+click-left = pulsemixer --toggle-mute
+scroll-up = pulsemixer --change-volume +1
+scroll-down = pulsemixer --change-volume -1
+
+interval = 5
+
+[module/bluetooth]
+type = custom/script
+exec = ~/.config/polybar/scripts/system-bluetooth-bluetoothctl.sh
+tail = true
+click-left = ~/.config/polybar/scripts/system-bluetooth-bluetoothctl.sh --toggle &
+
+[module/previous]
+type = custom/script
+format-background = ${colors.secondary}
+interval = 86400
+format = "%{T3}<label>"
+format-padding = 5
+; Previous song icon
+exec = echo ""
+; Check if spotify is running before displaying the icon
+exec-if = "pgrep spotify"
+format-underline = #1db954
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+
+[module/next]
+type = custom/script
+format-background = ${colors.secondary}
+interval = 86400
+format = "%{T3}<label>"
+format-padding = 5
+; Next song icon
+exec = echo ""
+; Check if spotify is running before displaying the icon
+exec-if = "pgrep spotify"
+format-underline = #1db954
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+
+[module/playpause]
+type = custom/ipc
+format-background = ${colors.secondary}
+; Default
+hook-0 = echo ""
+; Playing
+hook-1 = echo ""
+; Paused
+hook-2 = echo ""
+initial = 1
+format-underline = #1db954
+line-size = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+
+[module/spotify]
+type = custom/ipc
+hook-0 = echo "Start the music..."
+hook-1 = python3 ~/.config/polybar/scripts/spotify/spotify_status.py
+initial = 1
+format-padding = 1
+line-size = 1
+click-left = i3-msg "[instance="spotify"] focus"
+
+; ------------------------ END OF MODULES ----------
+
+
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+;pseudo-transparency = true
+
+[global/wm]
+margin-top = 55
+margin-bottom = 55
+
+; vim:ft=dosini
